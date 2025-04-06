@@ -1,1 +1,33 @@
+TRACK PLAYED TIME = FORMAT(spotify_history[ts],"HH:MM:SS")
+Tracked Played Date = DATE(YEAR(spotify_history[ts]), MONTH(spotify_history[ts]),DAY(spotify_history[ts]))
+Date Table = CALENDAR(min(spotify_history[ts]), MAX(spotify_history[ts]))
 
+
+% who achieved TCE = 
+VAR num_total =
+    CALCULATE(
+        DISTINCTCOUNT(TCESpreadsheets[TASC Id]),
+        FILTER(
+            TCESpreadsheets,
+            [Year Level] IN {12, 13} &&
+            [Credit points (this year)] > 0 &&
+            [age_at_dec31] >=15 && [age_at_dec31] <=19 &&
+            [Australian Resident] ="Y"
+        )
+    )
+
+VAR num_achieved_tce =
+    CALCULATE(
+        DISTINCTCOUNT(TCESpreadsheets[TASC Id]),
+        FILTER(
+            TCESpreadsheets,
+            [Year Level] IN {12, 13} &&
+            [Credit points (this year)] > 0 &&
+            [Achieved TCE] = "Yes" &&
+             [age_at_dec31] >=15 && [age_at_dec31] <=19 &&
+            [Australian Resident] ="Y"
+        )
+    )
+
+RETURN
+DIVIDE(num_achieved_tce, num_total, "NA")
